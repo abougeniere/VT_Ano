@@ -71,14 +71,14 @@ $faker = Faker\Factory::create('fr_FR'); // create a French faker
 
 
 for ($i = 0; $i < 10; $i++) {
-    $lastName = Clean($faker->lastName);
-    $firstName = Clean($faker->firstName);
+    $lastName = cleanString($faker->lastName);
+    $firstName = cleanString($faker->firstName);
     //$firstName = preg_replace('#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $faker->firstName);
 
     $query = 'UPDATE ' . TABLE . ' SET nom=' . $lastName . ', prenom=' . $firstName . ', ';
 
     // default email for every rows
-    if (defined(DEFAULT_EMAIL) && DEFAULT_EMAIL != "")
+    if (DEFAULT_EMAIL != "")
         $query .= 'email=' . DEFAULT_EMAIL . ' ';
     else
         $query .= 'email=' . $firstName . '.' . $lastName . '@univ-evry.fr ';
@@ -89,7 +89,7 @@ for ($i = 0; $i < 10; $i++) {
 
 
 // remove é,à,..
-function Clean($str)
+function cleanString($str)
 {
     return (str_replace(
         array('à', 'â', 'ä', 'á', 'ã', 'å', 'î', 'ï', 'ì', 'í', 'ô', 'ö', 'ò', 'ó', 'õ', 'ø', 'ù', 'û', 'ü', 'ú', 'é', 'è', 'ê', 'ë', 'ç', 'ÿ', 'ñ',
