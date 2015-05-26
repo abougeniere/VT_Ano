@@ -31,6 +31,9 @@ require "env.php";
 </head>
 <body>
 
+<div class="progress progress-striped active" id="progressouter">
+    <div class="bar" id="progress"></div>
+</div>
 <?php
 
 //
@@ -49,11 +52,12 @@ if (!$db_selected) {
 }
 echo 'Connexion à la base ' . DATABASE . ' OK<hr>';
 
+
 // source Table creation
 $TABLE_COPY_NAME = TABLE . '_ANONYM';
 
 // Check table
-if(mysql_num_rows(mysql_query("SHOW TABLES LIKE '". $TABLE_COPY_NAME ."'"))==0) {
+if (mysql_num_rows(mysql_query("SHOW TABLES LIKE '" . $TABLE_COPY_NAME . "'")) == 0) {
 
 
     $result = mysql_query('CREATE TABLE ' . $TABLE_COPY_NAME . ' LIKE ' . TABLE . ';');
@@ -70,16 +74,20 @@ if(mysql_num_rows(mysql_query("SHOW TABLES LIKE '". $TABLE_COPY_NAME ."'"))==0) 
     }
     echo 'Copie des données vers ' . $TABLE_COPY_NAME . ' OK<br>';
 
-}
-else
+} else
     echo 'La table ' . $TABLE_COPY_NAME . ' existe déjà : OK<br>';
 
-
+/*
+echo "<hr>";
+echo md5($_GET['test']);
+echo "<hr>";
+LPmcGmQRNZX2d5Vs3Vwzlw==
+*/
 
 //
 // Anonymizer
 //
-echo "Anonymisation .";
+echo "Anonymisation " . TABLE;
 $faker = Faker\Factory::create('fr_FR'); // create a French faker
 
 $indexRow = 'codeUtilisateur';
@@ -92,10 +100,14 @@ if (!$tableResult) {
 
 while ($row = mysql_fetch_array($tableResult, MYSQL_ASSOC)) {
 
+
     $lastName = cleanString($faker->lastName);
     $firstName = cleanString($faker->firstName);
 
     $query = 'UPDATE ' . $TABLE_COPY_NAME . ' SET nom="' . $lastName . '", prenom="' . $firstName . '", ';
+    $query .= ' login="' . $firstName . '.' . $lastName . '", ';
+    $query .= ' password ="' . DEFAULT_PASSWORD_VT_RESEAU . '", ';
+
 
     // default email for every row
     if (DEFAULT_EMAIL != "")
@@ -112,8 +124,67 @@ while ($row = mysql_fetch_array($tableResult, MYSQL_ASSOC)) {
     // Query exec
     $result = mysql_query($query);
     if (!$result) {
+        die('Requête invalide :<br>' . $query . '<br> ' . mysql_error());
+    }
+}
+echo " OK<hr>";
+
+
+// source Table2 creation
+$TABLE_COPY_NAME = TABLE2 . '_ANONYM';
+
+// Check table
+if (mysql_num_rows(mysql_query("SHOW TABLES LIKE '" . $TABLE_COPY_NAME . "'")) == 0) {
+
+
+    $result = mysql_query('CREATE TABLE ' . $TABLE_COPY_NAME . ' LIKE ' . TABLE2 . ';');
+    if (!$result) {
         die('Requête invalide : ' . mysql_error());
     }
+    echo 'Création de ' . $TABLE_COPY_NAME . ' OK<br>';
+
+
+// Duplicate datas
+    $result = mysql_query('INSERT INTO ' . $TABLE_COPY_NAME . ' SELECT * FROM ' . TABLE2 . ';');
+    if (!$result) {
+        die('Requête invalide : ' . mysql_error());
+    }
+    echo 'Copie des données vers ' . $TABLE_COPY_NAME . ' OK<br>';
+
+} else
+    echo 'La table ' . $TABLE_COPY_NAME . ' existe déjà : OK<br>';
+
+
+//
+// Anonymizer
+//
+echo "Anonymisation " . TABLE2;
+$faker = Faker\Factory::create('fr_FR'); // create a French faker
+
+$indexRow = 'codeProf';
+
+$tableResult = mysql_query('SELECT ' . $indexRow . ' FROM ' . $TABLE_COPY_NAME . ';');
+if (!$tableResult) {
+    die('Requête invalide : ' . mysql_error());
+}
+
+
+while ($row = mysql_fetch_array($tableResult, MYSQL_ASSOC)) {
+
+    $lastName = strtolower(cleanString($faker->lastName));
+    $firstName = strtolower(substr(cleanString($faker->firstName), 0, 1));
+
+    $query = 'UPDATE ' . $TABLE_COPY_NAME . ' SET login="' . $firstName . $lastName . '", ';
+    $query .= ' motPasse ="' . DEFAULT_PASSWORD_VT_RESEAU . '" ';
+    $query .= 'WHERE ' . $indexRow . ' = ' . $row[$indexRow];
+
+
+    // Query exec
+    $result = mysql_query($query);
+    if (!$result) {
+        die('Requête invalide :<br>' . $query . '<br> ' . mysql_error());
+    }
+    echo ".";
 }
 echo " OK";
 
