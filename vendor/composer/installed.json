@@ -1,17 +1,17 @@
 [
     {
         "name": "fzaninotto/faker",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v1.5.0",
+        "version_normalized": "1.5.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/fzaninotto/Faker.git",
-            "reference": "1dc7404280b32ee661ea65606efcf792be6fc4ca"
+            "reference": "d0190b156bcca848d401fb80f31f504f37141c8d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/1dc7404280b32ee661ea65606efcf792be6fc4ca",
-            "reference": "1dc7404280b32ee661ea65606efcf792be6fc4ca",
+            "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/d0190b156bcca848d401fb80f31f504f37141c8d",
+            "reference": "d0190b156bcca848d401fb80f31f504f37141c8d",
             "shasum": ""
         },
         "require": {
@@ -24,14 +24,14 @@
         "suggest": {
             "ext-intl": "*"
         },
-        "time": "2015-04-27 20:30:06",
+        "time": "2015-05-29 06:29:14",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.5.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Faker\\": "src/Faker/"
